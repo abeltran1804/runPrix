@@ -1,7 +1,9 @@
 var portName = '/dev/tty.usbmodem123456781';
-var options = {
-  baudrate: 115200
-};
+var serial;
+var newData;
+var inData;
+var jumpValue, squatValue, motionSpeed;
+var playerSquat;
 
 // Assest vars
 let runningG, runningP, forest;
@@ -9,8 +11,6 @@ let forestBackground;
 let mainR, mainF, mainJ;
 let runningMenu, menuMusic;
 let val1, val2;
-let newData;
-let inData;
 let fade;
 let b1, b2, b3, b4, b5;
 let MENU;
@@ -70,7 +70,8 @@ function preload() {
 
 function setup() {
   createCanvas(700, 600);
-  inData = ""
+  playerSquat = false;
+  newValue = false;
   points = 0; earnPoints = true;
   playerLives = 3;
   playerSpeed = 0
@@ -224,7 +225,7 @@ function setup() {
   serial.on('data', serialEvent);
   serial.on('error', serialError);
   serial.on('close', portClose);
-  serial.open(portName, options); 
+  serial.open(portName); 
 }
 
 function goBack() {
@@ -264,7 +265,15 @@ function goBack() {
 
 function draw() {
   background(20);  
-  text(inData, 400,500);
+  if (newValue) {
+    playerSpeed = motionSpeed;
+    if (squatValue === 1) {
+      playerSquat = true;
+    } else {
+      playerSquat = false;
+    }
+  }
+  // text(inData, 400,500);
   if (MENU == 0)
     showMenu();
   if (MENU == 1)
@@ -430,7 +439,7 @@ function playGame() {
     player.g = 3;
   }
 
-  if (keyIsDown(DOWN_ARROW)) {
+  if (keyIsDown(DOWN_ARROW) || playerSquat) {
     player.action = mainF;
     playerAction = 0;
     player.height = 75;
@@ -518,11 +527,11 @@ function printList(portList) {
 }
 
 function serverConnected() {
-  print('connected to server.');
+  console.log('connected to server.');
 }
 
 function portOpen() {
-  print('the serial port opened.')
+  console.log('the serial port opened.')
 }
 
 // Break up our serial input.
@@ -531,16 +540,25 @@ function portOpen() {
 function serialEvent() {
  let currentString = serial.readLine();
  trim(currentString);
- console.log(currentString);
  inData = currentString;
+ let splitData = split(inData, '|');
+ console.log(splitData)
+  if (splitData.length === 2) {
+    motionSpeed = int(trim(splitData[0]));
+    squatValue = int(trim(splitData[1]));
+    // jumpValue = int(trim(splitData[1]));
+    newValue = true;
+  } else {
+    newValue = false;
+  }
 }
 
 function serialError(err) {
-  print('Something went wrong with the serial port. ' + err);
+  console.log('Something went wrong with the serial port. ' + err);
 }
 
 function portClose() {
-  print('The serial port closed.');
+  console.log('The serial port closed.');
 }
 
 // Utility functions 
@@ -616,7 +634,6 @@ function plotGame() {
 
 
 function getBMR() {
-  console.log(radio.value())
   if(radio.value() === 'Male') {
     BMR = round((4.536*weight)+(15.88*uheight)-(5*age)+5,2);
   } else if (radio.value() === 'Female') {
