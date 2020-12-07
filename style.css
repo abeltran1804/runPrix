@@ -9,25 +9,55 @@ canvas {
 button{
   display: block;
   padding:0.35em 1.2em;
-  border:0.1em solid #000000;
-  background-color:#B22222;
+  border: none;
+  background-color: Transparent;
   margin:0 0.3em 0.3em 0;
-  border-radius:0.12em;
-  box-sizing: border-box;
   text-decoration:none;
-  font-family:'Roboto',sans-serif;
   font-weight:300;
-  color:#000000;
+  font-size:32px;
+  color: white;
   text-align:center;
   transition: all 0.2s;
 }
 
 button:hover{
-  background-color:#8B0000;
+  font-weight:bold;
 }
 @media all and (max-width:30em){
   .button{
   display:block;
   margin:0.4em auto;
   }
+}
+
+input[type=checkbox]
+{
+  /* Double-sized Checkboxes */
+  -ms-transform: scale(2); /* IE */
+  -moz-transform: scale(2); /* FF */
+  -webkit-transform: scale(2); /* Safari and Chrome */
+  -o-transform: scale(2); /* Opera */
+  transform: scale(2);
+  padding: 5px;
+}
+
+input[type=radio]
+{
+  /* Double-sized Checkboxes */
+  color: white;
+  -ms-transform: scale(2); /* IE */
+  -moz-transform: scale(2); /* FF */
+  -webkit-transform: scale(2); /* Safari and Chrome */
+  -o-transform: scale(1.5); /* Opera */
+  transform: scale(1.5);
+  padding: 10px;
+}
+
+/* Might want to wrap a span around your checkbox text */
+.checkboxtext
+{
+  /* Checkbox text */
+  color: white;
+  font-size: 110%;
+  display: inline;
 }
